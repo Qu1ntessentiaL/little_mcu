@@ -19,7 +19,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 11)
 
 #Uncomment for hardware floating point
-#add_compile_definitions(ARM_MATH_CM4;ARM_MATH_MATRIX_CHECK;ARM_MATH_ROUNDING)
+add_compile_definitions(ARM_MATH_CM4;ARM_MATH_MATRIX_CHECK;ARM_MATH_ROUNDING)
 #add_compile_options(-mfloat-abi=hard -mfpu=fpv4-sp-d16)
 #add_link_options(-mfloat-abi=hard -mfpu=fpv4-sp-d16)
 
@@ -49,17 +49,20 @@ else ()
     add_compile_options(-Og -g)
 endif ()
 
-include_directories(Core/Inc Drivers/STM32F0xx_HAL_Driver/Inc Drivers/STM32F0xx_HAL_Driver/Inc/Legacy Drivers/CMSIS/Device/ST/STM32F0xx/Include Drivers/CMSIS/Include)
+include_directories(Core/Inc Drivers/STM32F0xx_HAL_Driver/Inc Drivers/STM32F0xx_HAL_Driver/Inc/Legacy Drivers/CMSIS/Device/ST/STM32F0xx/Include Drivers/CMSIS/Include
+        Drivers/CMSIS/DSP/DSP_Lib_TestSuite/RefLibs/inc
+        Drivers/CMSIS/DSP/Include)
 
 add_definitions(-DDEBUG -DUSE_HAL_DRIVER -DSTM32F030x6)
 
-file(GLOB_RECURSE SOURCES "Core/*.*" "Drivers/*.*")
+file(GLOB_RECURSE SOURCES "Core/*.*" "Drivers/*.*" "Startup/*.*")
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F030K6TX_FLASH.ld)
 
 add_link_options(-Wl,-gc-sections,--print-memory-usage,-Map=${PROJECT_BINARY_DIR}/${PROJECT_NAME}.map)
 add_link_options(-mcpu=cortex-m0 -mthumb -mthumb-interwork)
 add_link_options(-T ${LINKER_SCRIPT})
+add_link_options(-specs=nosys.specs)
 
 add_executable(${PROJECT_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})
 
