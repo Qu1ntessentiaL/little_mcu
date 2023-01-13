@@ -2,6 +2,7 @@
 #include "gpio.h"
 #include "tim.h"
 #include "usart.h"
+#include "ws2812b.h"
 
 int main() {
     HAL_Init();
